@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Điểm danh — AI Mirror</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+    <header class="topbar">
+        <div class="brand">ACME Corp</div>
+        <div class="top-actions">
+            <div id="clock" class="clock">--:--</div>
+        </div>
+    </header>
+
+    <div class="app">
+        <aside class="sidebar">
+            <button id="btn-register" class="side-btn" onclick="switchMode('register')">📘 Đăng ký</button>
+            <button id="btn-recognize" class="side-btn active" onclick="switchMode('recognize')">📗 Điểm danh</button>
+            <div class="sidebar-foot">Phiên bản nội bộ</div>
+        </aside>
+
+        <main class="main">
+            <section id="section-recognize" class="panel panel--large">
+                <div class="panel-head">
+                    <h2>Điểm danh nhanh</h2>
+                    <div class="sub">Hướng camera lên khuôn mặt — nhấn "Chụp" để ghi nhận</div>
+                </div>
+
+                <div class="panel-body">
+                    <div class="camera-area">
+                        <video id="video-rec" autoplay playsinline muted></video>
+                        <canvas id="canvas-rec" class="hidden"></canvas>
+                        <div class="overlay-result">
+                            <div id="name-big">--</div>
+                            <div id="meta-small">Chưa chụp</div>
+                        </div>
+                    </div>
+
+                    <div class="controls">
+                        <button class="btn btn-primary" onclick="captureRecognize()">Chụp ảnh</button>
+                        <button class="btn btn-ghost" onclick="analyzeOnce()">🔍 Phân tích</button>
+                        <div id="recognize-result" class="result-list"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="section-register" class="panel hidden">
+                <div class="panel-head">
+                    <h2>Đăng ký nhân viên</h2>
+                    <div class="sub">Chụp ảnh và lưu vào cơ sở dữ liệu</div>
+                </div>
+
+                <div class="panel-body flow">
+                    <input id="reg-name" class="input" placeholder="Tên nhân viên (Họ & Tên)">
+
+                    <div class="camera-area small">
+                        <video id="video-reg" autoplay playsinline muted></video>
+                        <canvas id="canvas-reg" class="hidden"></canvas>
+                        <img id="preview-reg" class="preview hidden">
+                    </div>
+
+                    <div class="controls">
+                        <button class="btn btn-primary" onclick="captureRegister()">Chụp & Đăng ký</button>
+                        <div id="register-result"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
