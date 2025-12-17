@@ -1,6 +1,7 @@
 from PIL import Image
 from emotion_model import predict_emotion
 from gender_model import predict_gender
+from age_model import predict_age_group
 
 emotion_map = {
     "anger": "Tức giận 😡",
@@ -16,22 +17,33 @@ def analyze_attributes(img_path):
     try:
         image = Image.open(img_path).convert("RGB")
 
-        # Emotion
-        emotion_en = predict_emotion(image)
+        # Emotion with confidence
+        emotion_en, emotion_conf = predict_emotion(image)
         emotion_vi = emotion_map.get(emotion_en, "Không rõ")
 
-        # Gender
-        gender_vi = predict_gender(image)
+        # Gender with confidence
+        gender_vi, gender_conf = predict_gender(image)
+
+        # Age with confidence
+        age_vi, age_conf = predict_age_group(image)
 
         return {
-            "age": "Không hỗ trợ",
+            "age": age_vi,
+            "age_confidence": round(age_conf, 2),
             "gender": gender_vi,
-            "emotion": emotion_vi
+            "gender_confidence": round(gender_conf, 2),
+            "emotion": emotion_vi,
+            "emotion_confidence": round(emotion_conf, 2)
         }
 
     except Exception as e:
-        print("Emotion/Gender Error:", e)
-        print("DEBUG emotion_en:", emotion_en)
-
-        return {"age": "?", "gender": "?", "emotion": "?"}
+        print("Error analyzing attributes:", e)
+        return {
+            "age": "?",
+            "age_confidence": 0,
+            "gender": "?",
+            "gender_confidence": 0,
+            "emotion": "?",
+            "emotion_confidence": 0
+        }
 

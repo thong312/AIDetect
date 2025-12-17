@@ -21,6 +21,7 @@
         <aside class="sidebar">
             <button id="btn-register" class="side-btn" onclick="switchMode('register')">📘 Đăng ký</button>
             <button id="btn-recognize" class="side-btn active" onclick="switchMode('recognize')">📗 Điểm danh</button>
+            <button id="btn-analyze" class="side-btn" onclick="switchMode('analyze')">🎥 Phân tích Video</button>
             <div class="sidebar-foot">Phiên bản nội bộ</div>
         </aside>
 
@@ -42,7 +43,8 @@
                     </div>
 
                     <div class="controls">
-                        <button class="btn btn-primary" onclick="captureRecognize()">Chụp ảnh</button>
+                        <button class="btn btn-primary" id="btn-camera-rec" onclick="toggleCamera('video-rec', 'btn-camera-rec')">📹 Bật Camera</button>
+                        <button class="btn btn-ghost" onclick="captureRecognize()">Chụp ảnh</button>
                         <button class="btn btn-ghost" onclick="analyzeOnce()">🔍 Phân tích</button>
                         <div id="recognize-result" class="result-list"></div>
                     </div>
@@ -52,21 +54,47 @@
             <section id="section-register" class="panel hidden">
                 <div class="panel-head">
                     <h2>Đăng ký nhân viên</h2>
-                    <div class="sub">Chụp ảnh và lưu vào cơ sở dữ liệu</div>
+                    <div class="sub">Tải ảnh và lưu vào cơ sở dữ liệu</div>
                 </div>
 
                 <div class="panel-body flow">
                     <input id="reg-name" class="input" placeholder="Tên nhân viên (Họ & Tên)">
 
-                    <div class="camera-area small">
-                        <video id="video-reg" autoplay playsinline muted></video>
-                        <canvas id="canvas-reg" class="hidden"></canvas>
-                        <img id="preview-reg" class="preview hidden">
+                    <div class="file-input-wrapper">
+                        <input type="file" id="reg-file" accept="image/*" class="file-input">
+                        <label for="reg-file" class="file-label">📁 Chọn ảnh từ máy tính</label>
+                    </div>
+
+                    <img id="preview-reg" class="preview hidden">
+
+                    <div class="controls">
+                        <button class="btn btn-primary" id="btn-camera-reg" onclick="toggleCamera('video-reg', 'btn-camera-reg')">📹 Bật Camera</button>
+                        <button class="btn btn-ghost" onclick="registerWithFile()">Đăng ký</button>
+                        <div id="register-result"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="section-analyze" class="panel panel--large hidden">
+                <div class="panel-head">
+                    <h2>Phân tích Video Real-time</h2>
+                    <div class="sub">Phân tích tuổi, giới tính, cảm xúc liên tục từ camera</div>
+                </div>
+
+                <div class="panel-body">
+                    <div class="camera-area">
+                        <video id="video-analyze" autoplay playsinline muted></video>
+                        <canvas id="canvas-analyze" width="520" height="360" style="position:absolute;top:0;left:0;"></canvas>
+                        <div class="overlay-result">
+                            <div id="analyze-emotion">--</div>
+                            <div id="analyze-meta">Chưa bắt đầu</div>
+                        </div>
                     </div>
 
                     <div class="controls">
-                        <button class="btn btn-primary" onclick="captureRegister()">Chụp & Đăng ký</button>
-                        <div id="register-result"></div>
+                        <button class="btn btn-primary" id="btn-camera-analyze" onclick="toggleCamera('video-analyze', 'btn-camera-analyze')">📹 Bật Camera</button>
+                        <button class="btn btn-ghost" id="btn-analyze-toggle" onclick="toggleVideoAnalysis()">▶ Bắt đầu</button>
+                        <div id="analyze-result" class="result-list"></div>
                     </div>
                 </div>
             </section>
