@@ -11,94 +11,90 @@
 
 <body>
     <header class="topbar">
-        <div class="brand">ACME Corp</div>
+        <div class="brand">LMT Corp</div>
+        <nav class="topbar-nav">
+            <button class="nav-tab" onclick="switchMode('recognize')">📗 Điểm danh</button>
+            <button class="nav-tab" onclick="switchMode('register')">📘 Đăng ký</button>
+            <button class="nav-tab" onclick="switchMode('analyze')">🎥 Phân tích Video</button>
+        </nav>
         <div class="top-actions">
             <div id="clock" class="clock">--:--</div>
         </div>
     </header>
 
     <div class="app">
-        <aside class="sidebar">
-            <button id="btn-register" class="side-btn" onclick="switchMode('register')">📘 Đăng ký</button>
-            <button id="btn-recognize" class="side-btn active" onclick="switchMode('recognize')">📗 Điểm danh</button>
-            <button id="btn-analyze" class="side-btn" onclick="switchMode('analyze')">🎥 Phân tích Video</button>
-            <div class="sidebar-foot">Phiên bản nội bộ</div>
-        </aside>
+        <section id="section-recognize" class="panel">
+            <div class="panel-head">
+                <h2>Điểm danh nhanh</h2>
+                <div class="sub">Hướng camera lên khuôn mặt — nhấn "Chụp" để ghi nhận</div>
+            </div>
 
-        <main class="main">
-            <section id="section-recognize" class="panel panel--large">
-                <div class="panel-head">
-                    <h2>Điểm danh nhanh</h2>
-                    <div class="sub">Hướng camera lên khuôn mặt — nhấn "Chụp" để ghi nhận</div>
-                </div>
-
-                <div class="panel-body">
-                    <div class="camera-area">
-                        <video id="video-rec" autoplay playsinline muted></video>
-                        <canvas id="canvas-rec" class="hidden"></canvas>
-                        <div class="overlay-result">
-                            <div id="name-big">--</div>
-                            <div id="meta-small">Chưa chụp</div>
-                        </div>
-                    </div>
-
-                    <div class="controls">
-                        <button class="btn btn-primary" id="btn-camera-rec" onclick="toggleCamera('video-rec', 'btn-camera-rec')">📹 Bật Camera</button>
-                        <button class="btn btn-ghost" onclick="captureRecognize()">Chụp ảnh</button>
-                        <button class="btn btn-ghost" onclick="analyzeOnce()">🔍 Phân tích</button>
-                        <div id="recognize-result" class="result-list"></div>
+            <div class="panel-body">
+                <div class="camera-area">
+                    <video id="video-rec" autoplay playsinline muted></video>
+                    <canvas id="canvas-rec" class="hidden"></canvas>
+                    <div class="overlay-result">
+                        <div id="name-big">--</div>
+                        <div id="meta-small">Chưa chụp</div>
                     </div>
                 </div>
-            </section>
 
-            <section id="section-register" class="panel hidden">
-                <div class="panel-head">
-                    <h2>Đăng ký nhân viên</h2>
-                    <div class="sub">Tải ảnh và lưu vào cơ sở dữ liệu</div>
+                <div class="controls">
+                    <button class="btn btn-primary" id="btn-camera-rec" onclick="toggleCamera('video-rec', 'btn-camera-rec')">📹 Bật Camera</button>
+                    <button class="btn btn-ghost" onclick="captureRecognize()">Chụp ảnh</button>
+                    <button class="btn btn-ghost" onclick="analyzeOnce()">🔍 Phân tích</button>
+                    <div id="recognize-result" class="result-list"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="section-register" class="panel hidden">
+            <div class="panel-head">
+                <h2>Đăng ký nhân viên</h2>
+                <div class="sub">Tải ảnh và lưu vào cơ sở dữ liệu</div>
+            </div>
+
+            <div class="panel-body flow">
+                <input id="reg-name" class="input" placeholder="Tên nhân viên (Họ & Tên)">
+
+                <div class="file-input-wrapper">
+                    <input type="file" id="reg-file" accept="image/*" class="file-input">
+                    <label for="reg-file" class="file-label">📁 Chọn ảnh từ máy tính</label>
                 </div>
 
-                <div class="panel-body flow">
-                    <input id="reg-name" class="input" placeholder="Tên nhân viên (Họ & Tên)">
+                <img id="preview-reg" class="preview hidden">
 
-                    <div class="file-input-wrapper">
-                        <input type="file" id="reg-file" accept="image/*" class="file-input">
-                        <label for="reg-file" class="file-label">📁 Chọn ảnh từ máy tính</label>
-                    </div>
+                <div class="controls">
+                    <button class="btn btn-primary" id="btn-camera-reg" onclick="toggleCamera('video-reg', 'btn-camera-reg')">📹 Bật Camera</button>
+                    <button class="btn btn-ghost" onclick="registerWithFile()">Đăng ký</button>
+                    <div id="register-result"></div>
+                </div>
+            </div>
+        </section>
 
-                    <img id="preview-reg" class="preview hidden">
+        <section id="section-analyze" class="panel hidden">
+            <div class="panel-head">
+                <h2>Phân tích Video Real-time</h2>
+                <div class="sub">Phân tích tuổi, giới tính, cảm xúc liên tục từ camera</div>
+            </div>
 
-                    <div class="controls">
-                        <button class="btn btn-primary" id="btn-camera-reg" onclick="toggleCamera('video-reg', 'btn-camera-reg')">📹 Bật Camera</button>
-                        <button class="btn btn-ghost" onclick="registerWithFile()">Đăng ký</button>
-                        <div id="register-result"></div>
+            <div class="panel-body">
+                <div class="camera-area">
+                    <video id="video-analyze" autoplay playsinline muted></video>
+                    <canvas id="canvas-analyze" width="580" height="420"></canvas>
+                    <div class="overlay-result">
+                        <div id="analyze-emotion">--</div>
+                        <div id="analyze-meta">Chưa bắt đầu</div>
                     </div>
                 </div>
-            </section>
 
-            <section id="section-analyze" class="panel panel--large hidden">
-                <div class="panel-head">
-                    <h2>Phân tích Video Real-time</h2>
-                    <div class="sub">Phân tích tuổi, giới tính, cảm xúc liên tục từ camera</div>
+                <div class="controls">
+                    <button class="btn btn-primary" id="btn-camera-analyze" onclick="toggleCamera('video-analyze', 'btn-camera-analyze')">📹 Bật Camera</button>
+                    <button class="btn btn-ghost" id="btn-analyze-toggle" onclick="toggleVideoAnalysis()">▶ Bắt đầu</button>
+                    <div id="analyze-result" class="result-list"></div>
                 </div>
-
-                <div class="panel-body">
-                    <div class="camera-area">
-                        <video id="video-analyze" autoplay playsinline muted></video>
-                        <canvas id="canvas-analyze" width="520" height="360" style="position:absolute;top:0;left:0;"></canvas>
-                        <div class="overlay-result">
-                            <div id="analyze-emotion">--</div>
-                            <div id="analyze-meta">Chưa bắt đầu</div>
-                        </div>
-                    </div>
-
-                    <div class="controls">
-                        <button class="btn btn-primary" id="btn-camera-analyze" onclick="toggleCamera('video-analyze', 'btn-camera-analyze')">📹 Bật Camera</button>
-                        <button class="btn btn-ghost" id="btn-analyze-toggle" onclick="toggleVideoAnalysis()">▶ Bắt đầu</button>
-                        <div id="analyze-result" class="result-list"></div>
-                    </div>
-                </div>
-            </section>
-        </main>
+            </div>
+        </section>
     </div>
 
     <script src="/static/app.js"></script>

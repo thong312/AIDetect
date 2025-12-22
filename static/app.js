@@ -32,17 +32,20 @@ function toggleCamera(videoId, btnId){
 		btn.innerText = '📹 Tắt Camera';
 		btn.classList.add('camera-on');
 	}
-};
+}
 
 function switchMode(mode){
-	document.getElementById('btn-register').classList.remove('active');
-	document.getElementById('btn-recognize').classList.remove('active');
-	document.getElementById('btn-analyze').classList.remove('active');
+	// Update nav tabs
+	const navTabs = document.querySelectorAll('.nav-tab');
+	navTabs.forEach(tab => tab.classList.remove('active'));
+	
+	// Update sections
 	document.getElementById('section-register').classList.add('hidden');
 	document.getElementById('section-recognize').classList.add('hidden');
 	document.getElementById('section-analyze').classList.add('hidden');
+	
 	if(mode==='register'){
-		document.getElementById('btn-register').classList.add('active');
+		navTabs[1].classList.add('active');
 		document.getElementById('section-register').classList.remove('hidden');
 		stopAutoRecognize();
 		stopVideoAnalysis();
@@ -50,14 +53,14 @@ function switchMode(mode){
 		document.getElementById('btn-camera-reg').innerText = '📹 Tắt Camera';
 		document.getElementById('btn-camera-reg').classList.add('camera-on');
 	} else if(mode==='analyze'){
-		document.getElementById('btn-analyze').classList.add('active');
+		navTabs[2].classList.add('active');
 		document.getElementById('section-analyze').classList.remove('hidden');
 		stopAutoRecognize();
 		startCamera('video-analyze');
 		document.getElementById('btn-camera-analyze').innerText = '📹 Tắt Camera';
 		document.getElementById('btn-camera-analyze').classList.add('camera-on');
 	} else {
-		document.getElementById('btn-recognize').classList.add('active');
+		navTabs[0].classList.add('active');
 		document.getElementById('section-recognize').classList.remove('hidden');
 		stopVideoAnalysis();
 		startCamera('video-rec');
@@ -214,11 +217,9 @@ function startVideoAnalysis(){
 		const canvas = document.getElementById('canvas-analyze');
 		if(!video || !video.srcObject) return;
 		try{
-			// Vẽ frame video lên canvas
 			const ctx = canvas.getContext('2d');
 			ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 			
-			// Lấy blob từ canvas
 			canvas.toBlob(async (blob)=>{
 				const form = new FormData();
 				form.append('file', blob, 'analyze.jpg');
@@ -242,20 +243,17 @@ function stopVideoAnalysis(){
 	btn.innerText = '▶ Bắt đầu';
 	btn.classList.remove('active');
 	
-	// Xóa canvas
 	const canvas = document.getElementById('canvas-analyze');
 	const ctx = canvas.getContext('2d');
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
 function updateAnalysisDisplay(info){
-	// Cập nhật overlay text
 	const emotion = document.getElementById('analyze-emotion');
 	const meta = document.getElementById('analyze-meta');
 	emotion.innerText = info.emotion || '--';
 	meta.innerText = `Tuổi ${info.age} • ${info.gender}`;
 	
-	// Cập nhật kết quả chi tiết
 	const list = document.getElementById('analyze-result');
 	
 	list.innerHTML = `
@@ -289,6 +287,10 @@ function updateAnalysisDisplay(info){
 	`;
 }
 
+// Auto recognize placeholder functions
+function startAutoRecognize(){}
+function stopAutoRecognize(){}
+
 // Clock
 function startClock(){
 	const el = document.getElementById('clock');
@@ -297,11 +299,8 @@ function startClock(){
 		el.innerText = d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
 	},1000);
 }
-
 // Init default
 window.addEventListener('load',()=>{
 	startClock();
-	// start camera for recognize by default
 	switchMode('recognize');
 });
-

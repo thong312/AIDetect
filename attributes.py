@@ -1,7 +1,7 @@
 from PIL import Image
-from emotion_model import predict_emotion
-from gender_model import predict_gender
-from age_model import predict_age_group
+from models_service.emotion_model import predict_emotion
+from models_service.gender_model import predict_gender
+from models_service.age_model import predict_age_group
 
 emotion_map = {
     "anger": "Tức giận 😡",

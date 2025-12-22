@@ -1,0 +1,36 @@
+{
+  "timestamp": "2025-12-22T14:10:35.264049",
+  "session_duration_s": 0.000807,
+  "total_predictions": 10,
+  "vit_metrics": {
+    "name": "ViT-B/16",
+    "predictions": 10,
+    "accuracy": 100.0,
+    "avg_inference_time_ms": 50.0,
+    "avg_confidence": 91.2,
+    "total_inference_time_s": 0.5,
+    "avg_memory_mb": 14.83
+  },
+  "transunet_metrics": {
+    "name": "TransUNet",
+    "predictions": 10,
+    "accuracy": 0.0,
+    "avg_inference_time_ms": 50.0,
+    "avg_confidence": 88.7,
+    "total_inference_time_s": 0.5,
+    "avg_memory_mb": 14.83
+  },
+  "ensemble_metrics": {
+    "name": "Ensemble",
+    "predictions": 10,
+    "accuracy": 100.0,
+    "avg_inference_time_ms": 50.0,
+    "avg_confidence": 92.5,
+    "total_inference_time_s": 0.5,
+    "avg_memory_mb": 14.83
+  },
+  "system_info": {
+    "cpu_percent": 1.0,
+    "memory_percent": 48.8
+  }
+}

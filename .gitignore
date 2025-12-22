@@ -5,3 +5,5 @@ test.png
 test.py 
 faces.db 
 temp
+logs/
+face.jpg
