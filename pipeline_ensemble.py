@@ -11,12 +11,29 @@ from face_recognition import get_embedding
 from attributes import analyze_attributes
 
 # NEW: Import ensemble-based emotion prediction
-from models_service.emotion_model import predict_emotion, predict_emotion_ensemble
+from models_service.emotion_model import predict_emotion_ensemble
+from io import BytesIO
+
+
+def _load_image(image_or_path):
+    """Load an image from a path, file-like object, Flask FileStorage, or bytes."""
+    if isinstance(image_or_path, str):
+        return Image.open(image_or_path).convert("RGB")
+    if isinstance(image_or_path, (bytes, bytearray)):
+        return Image.open(BytesIO(image_or_path)).convert("RGB")
+    try:
+        return Image.open(image_or_path).convert("RGB")
+    except Exception:
+        stream = getattr(image_or_path, "stream", None)
+        if stream is not None:
+            stream.seek(0)
+            return Image.open(stream).convert("RGB")
+        raise
 
 
 def register_user(image_file, name):
     """Pipeline ĐĂNG KÝ người dùng."""
-    image = Image.open(image_file).convert("RGB")
+    image = _load_image(image_file)
     embedding = get_embedding(image)
 
     if embedding is None:
@@ -42,17 +59,14 @@ def recognize_user(image_file, use_ensemble=True):
     Returns:
         user_name, attributes, distance
     """
-    temp_path = "temp/query.jpg"
-    image_file.save(temp_path)
-
-    image = Image.open(temp_path).convert("RGB")
+    image = _load_image(image_file)
     target_embedding = get_embedding(image)
 
     if target_embedding is None:
         return "Không thấy mặt", {}, 100
 
     # --- Phân tích cảm xúc (with ensemble) ---
-    attributes = analyze_attributes(temp_path)
+    attributes = analyze_attributes(image)
 
     # --- So sánh embedding ---
     db = SessionLocal()
@@ -79,10 +93,7 @@ def recognize_user_with_details(image_file, use_ensemble=True):
     Returns:
         user_name, attributes_with_details, distance
     """
-    temp_path = "temp/query.jpg"
-    image_file.save(temp_path)
-
-    image = Image.open(temp_path).convert("RGB")
+    image = _load_image(image_file)
     target_embedding = get_embedding(image)
 
     if target_embedding is None:
@@ -104,7 +115,7 @@ def recognize_user_with_details(image_file, use_ensemble=True):
         }
     else:
         # Use standard analyze_attributes
-        attributes = analyze_attributes(temp_path)
+        attributes = analyze_attributes(image)
 
     # --- So sánh embedding ---
     db = SessionLocal()

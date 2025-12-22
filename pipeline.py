@@ -4,10 +4,35 @@ from models import User
 from database import SessionLocal
 from face_recognition import get_embedding
 from attributes import analyze_attributes
+from io import BytesIO
+
+
+def _load_image(image_or_path):
+    """Load an image from a path, file-like object, Flask FileStorage, or bytes.
+
+    Returns a PIL Image in RGB mode.
+    """
+    # path string
+    if isinstance(image_or_path, str):
+        return Image.open(image_or_path).convert("RGB")
+
+    # bytes
+    if isinstance(image_or_path, (bytes, bytearray)):
+        return Image.open(BytesIO(image_or_path)).convert("RGB")
+
+    # file-like / FileStorage
+    try:
+        return Image.open(image_or_path).convert("RGB")
+    except Exception:
+        stream = getattr(image_or_path, "stream", None)
+        if stream is not None:
+            stream.seek(0)
+            return Image.open(stream).convert("RGB")
+        raise
 
 def register_user(image_file, name):
     """Pipeline ĐĂNG KÝ người dùng."""
-    image = Image.open(image_file).convert("RGB")
+    image = _load_image(image_file)
     embedding = get_embedding(image)
 
     if embedding is None:
@@ -24,17 +49,15 @@ def register_user(image_file, name):
 
 def recognize_user(image_file):
     """Pipeline nhận diện + phân tích cảm xúc."""
-    temp_path = "temp/query.jpg"
-    image_file.save(temp_path)
-
-    image = Image.open(temp_path).convert("RGB")
+    # Load image directly (supports path, FileStorage, bytes, or PIL Image)
+    image = _load_image(image_file)
     target_embedding = get_embedding(image)
 
     if target_embedding is None:
         return "Không thấy mặt", {}, 100
 
     # --- Phân tích cảm xúc ---
-    attributes = analyze_attributes(temp_path)
+    attributes = analyze_attributes(image)
 
     # --- So sánh embedding ---
     db = SessionLocal()

@@ -2,6 +2,7 @@ from PIL import Image
 from models_service.emotion_model import predict_emotion
 from models_service.gender_model import predict_gender
 from models_service.age_model import predict_age_group
+from io import BytesIO
 
 emotion_map = {
     "anger": "Tức giận 😡",
@@ -13,9 +14,40 @@ emotion_map = {
     "neutral": "Bình thường 😐"
 }
 
-def analyze_attributes(img_path):
+def _load_image(image_or_path):
+    """Load an image from a path, file-like object, Flask FileStorage, or bytes."""
+    # Path string
+    if isinstance(image_or_path, str):
+        return Image.open(image_or_path).convert("RGB")
+
+    # Bytes
+    if isinstance(image_or_path, (bytes, bytearray)):
+        return Image.open(BytesIO(image_or_path)).convert("RGB")
+
+    # File-like / FileStorage: PIL can open file-like objects directly
     try:
-        image = Image.open(img_path).convert("RGB")
+        return Image.open(image_or_path).convert("RGB")
+    except Exception:
+        # As a last resort, try reading .stream if present
+        stream = getattr(image_or_path, "stream", None)
+        if stream is not None:
+            stream.seek(0)
+            return Image.open(stream).convert("RGB")
+        raise
+
+
+def analyze_attributes(image_or_path):
+    """Analyze attributes from a PIL Image or a path/file-like object.
+
+    Returns a dict with age/gender/emotion and confidences. This is robust
+    to being passed a path string ("temp/query.jpg"), a Flask FileStorage,
+    raw bytes, or a PIL Image.
+    """
+    try:
+        if isinstance(image_or_path, Image.Image):
+            image = image_or_path
+        else:
+            image = _load_image(image_or_path)
 
         # Emotion with confidence
         emotion_en, emotion_conf = predict_emotion(image)

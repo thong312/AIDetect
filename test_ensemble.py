@@ -14,7 +14,7 @@ print("=" * 60)
 
 try:
     from models_service.emotion_model import predict_emotion, predict_emotion_ensemble
-    from transunet_model import TransUNetClassifier
+    from models_service.transunet_model import TransUNetClassifier
     from models_service.ensemble_model import EnsemblePredictor
     
     print("✓ All imports successful!")

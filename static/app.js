@@ -112,7 +112,7 @@ async function analyzeOnce(){
 	form.append('file', blob, 'analyze.jpg');
 	const res = await fetch('/analyze',{method:'POST',body:form});
 	const data = await res.json();
-	updateName('--', data.info||{});
+	updateName('Success', data.info||{});
 	const list = document.getElementById('recognize-result');
 	
 	const info = data.info;

@@ -12,7 +12,7 @@ import torch.nn as nn
 import numpy as np
 from typing import Optional, Tuple, Dict, List
 from transformers import ViTForImageClassification, ViTImageProcessor
-from transunet_model import TransUNetClassifier
+from models_service.transunet_model import TransUNetClassifier
 import functools
 import warnings
 

@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify, render_template
 from database import Base, engine
-from pipeline import register_user, recognize_user
+from pipeline_ensemble import register_user,  recognize_user_with_details
 import os
 
 app = Flask(__name__)
@@ -32,7 +32,7 @@ def register():
 def recognize():
     file = request.files["file"]
 
-    name, attributes, dist = recognize_user(file)
+    name, attributes, dist =  recognize_user_with_details(file)
 
     return jsonify({
         "name": name,
@@ -46,7 +46,7 @@ def recognize():
 def analyze():
     file = request.files["file"]
     from attributes import analyze_attributes
-    # Pass FileStorage directly to analyze_attributes (it handles file-like objects)
+    # Pass the FileStorage directly; analyze_attributes handles file-like objects
     info = analyze_attributes(file)
 
     return jsonify({"info": info})

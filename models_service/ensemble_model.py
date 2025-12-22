@@ -5,7 +5,7 @@ Ensemble model combining ViT-B/16 and TransUNet with ResNet-50 backbone
 import torch
 import torch.nn as nn
 from transformers import ViTForImageClassification, ViTImageProcessor
-from transunet_model import TransUNetClassifier
+from models_service.transunet_model import TransUNetClassifier
 
 
 class EnsembleModel(nn.Module):
