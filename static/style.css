@@ -227,6 +227,20 @@ body {
 	border-color: var(--primary);
 }
 
+.alert {
+	border: 1px solid #ffd699;
+	background: #fff5e6;
+	color: #c05a00;
+	padding: 12px 14px;
+	border-radius: 12px;
+	font-weight: 600;
+	box-shadow: 0 4px 12px rgba(255, 181, 71, 0.15);
+}
+
+.alert.warning {
+	border-color: #ffb347;
+}
+
 .btn.active {
 	background: linear-gradient(135deg, var(--accent), #00a887);
 	color: white;

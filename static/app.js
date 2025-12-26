@@ -101,7 +101,14 @@ async function captureRecognize(){
 	const data = await res.json();
 	updateName(data.name, data.info||{});
 	const list = document.getElementById('recognize-result');
-	list.innerHTML = `<div class="result-item"><b>Tên:</b> ${data.name}<br><b>Khoảng cách:</b> ${data.distance}<br><b>Cảm xúc:</b> ${data.info?.emotion||'-'}</div>`;
+	const alertBox = data.alert ? `<div class="alert warning">${data.alert}</div>` : '';
+	list.innerHTML = `
+		${alertBox}
+		<div class="result-item">
+			<b>Tên:</b> ${data.name}<br>
+			<b>Khoảng cách:</b> ${data.distance}<br>
+			<b>Cảm xúc:</b> ${data.info?.emotion||'-'}
+		</div>`;
 }
 
 async function analyzeOnce(){
